@@ -1,0 +1,118 @@
+name: FitTrack
+options:
+  bundleIdPrefix: com.fittrack
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_PREVIEWS: YES
+    DEVELOPMENT_TEAM: ""
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+
+packages: {}
+
+targets:
+  FitTrack:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: FitTrack
+    resources:
+      - path: FitTrack/Resources
+    info:
+      path: FitTrack/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSHealthShareUsageDescription: "FitTrack reads your steps and sleep from Health to show them alongside your other daily stats. This data never leaves your device unless you choose to log it manually."
+        NSHealthUpdateUsageDescription: "FitTrack does not write data to Health."
+        NSCameraUsageDescription: "FitTrack uses the camera to scan food barcodes and to take optional progress photos."
+        NSFaceIDUsageDescription: "FitTrack can lock the app behind Face ID to keep your health data private."
+        ITSAppUsesNonExemptEncryption: false
+        UIBackgroundModes: []
+    entitlements:
+      path: FitTrack/FitTrack.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+        com.apple.security.application-groups:
+          - group.com.fittrack.shared
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)com.fittrack
+    dependencies:
+      - target: FitTrackWidgets
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fittrack.app
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_EMIT_LOC_STRINGS: YES
+        ENABLE_HARDENED_RUNTIME: YES
+    scheme:
+      testTargets:
+        - FitTrackTests
+      commandLineArguments:
+        "-com.apple.CoreData.ConcurrencyDebug 1": true
+
+  FitTrackWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: FitTrackWidgets
+    info:
+      path: FitTrackWidgets/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: FitTrackWidgets/FitTrackWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.fittrack.shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fittrack.app.widgets
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: YES
+
+  FitTrackTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: FitTrackTests
+    dependencies:
+      - target: FitTrack
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fittrack.app.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/FitTrack.app/FitTrack"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+
+schemes:
+  FitTrack:
+    build:
+      targets:
+        FitTrack: all
+        FitTrackTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - FitTrackTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

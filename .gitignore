@@ -1,0 +1,21 @@
+# Xcode / XcodeGen — project is generated from ios/project.yml, never committed
+ios/*.xcodeproj/
+ios/*.xcworkspace/
+ios/DerivedData/
+**/xcuserdata/
+*.xcuserstate
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+
+# Node / backend
+backend/node_modules/
+backend/dist/
+backend/.env
+
+# Editor
+.vscode/
