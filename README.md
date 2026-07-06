@@ -3,21 +3,30 @@
 Native iOS fitness app — one fast, beautiful app replacing MyFitnessPal + Strong/Hevy + a habit
 tracker. Full architecture and rationale: [`PLAN.md`](PLAN.md).
 
-**Status: Phase 1 complete** — local-only core (SwiftData, no backend/accounts yet). Phases 2–4
-(sync/accounts, HealthKit/barcode/AI-estimate/widgets, polish+hardening) are not started.
+**Status: Phases 1–4 complete.** Local-only core (SwiftData), backend accounts + sync
+(Fastify/Drizzle/Postgres, Sign in with Apple + email/password, push/pull sync with
+last-write-wins conflict resolution), integrations (HealthKit steps/sleep, barcode scanning,
+AI freeform-meal estimate, Today rings widget, rest-timer Live Activity), and hardening
+(Face ID app-lock, app-switcher privacy redaction, accessibility pass, security self-review).
+Signing in is optional — every core feature still works fully offline; an account only adds
+cross-device sync.
+
+Security posture: [`docs/SECURITY-REVIEW.md`](docs/SECURITY-REVIEW.md) (OWASP Mobile Top 10 +
+API Top 10 self-review, checked against this codebase, not a template). Dependency scanning:
+[`.github/dependabot.yml`](.github/dependabot.yml).
 
 ## Repo layout
 
 ```
 ios/          SwiftUI app — written here on Windows, built/run on Mac in Xcode
-backend/      Node/Fastify API — runnable and testable here on Windows (Phase 2+)
-docs/         Architecture, privacy, security-review docs
+backend/      Node/Fastify API — runnable and testable here on Windows
+docs/         Deployment + security-review docs
 ```
 
 ## Building on the Mac (do this first)
 
 This code was written on Windows and has never been compiled — **the first Mac build is expected
-to surface errors**. That's normal for Phase 1; report whatever Xcode shows and it'll get fixed.
+to surface errors**. Report whatever Xcode shows and it'll get fixed.
 
 1. Copy or `git clone` this repo to the Mac.
 2. Install Xcode 16+ (App Store) and [XcodeGen](https://github.com/yonaskolb/XcodeGen):
@@ -35,7 +44,14 @@ to surface errors**. That's normal for Phase 1; report whatever Xcode shows and 
 5. Run tests with ⌘U (or `xcodebuild test -scheme FitTrack -destination 'platform=iOS Simulator,name=iPhone 16'`).
 
 **Expected result:** app launches to the Today tab with all rings at zero and empty-state
-invitations (fresh SwiftData store, ~146 seeded exercises). No sign-in — Phase 1 has no backend.
+invitations (fresh SwiftData store, ~146 seeded exercises). Sign-in is optional (Profile tab →
+"Sign in to enable sync") — the backend must be running (see below) for it to succeed;
+`BackendConfig.swift` points Debug builds at `http://localhost:3000`, which the Simulator (running
+on the same Mac) can reach directly.
+
+**Real-device-only features:** barcode scanning (VisionKit's `DataScannerViewController` isn't
+supported in the Simulator) and Live Activities render correctly only on a physical device or a
+Simulator running iOS 16.1+ with a compatible runtime — test the barcode flow on a real iPhone.
 
 ### Signing
 
@@ -49,20 +65,43 @@ choice, which lives in a local user file, not `project.yml`.
 1. **Log a meal in 2 taps:** Today → "+ Log lunch" → tap a recent/saved item → ring animates,
    sheet dismisses. (First run has no recents — use "Describe freeform" once to seed one.)
 2. **Log a set in 1 tap:** Train → "Start empty workout" → "Add exercise" → tap a set's checkmark
-   → rest-timer banner appears, haptic fires. Hit a heavier weight/more reps than before → PR badge.
+   → rest-timer banner appears, haptic fires, and a Live Activity appears on the Lock
+   Screen/Dynamic Island (real device). Hit a heavier weight/more reps than before → PR badge.
 3. **Kill network, log everything:** enable Airplane Mode. Log a meal, log a set, log water/weight
-   — all should work identically (Phase 1 is 100% local; Phase 2+ adds an offline badge + sync).
+   — all should work identically (local-only core; sync/remote search/AI-estimate are additive).
 4. **Finish a workout:** tap "Finish" → summary screen shows sets/volume/duration → Done returns
    to Train.
 5. **Progress:** log a couple of weight entries and completed sets, then check Progress → Body
    (trend line appears after 2+ weigh-ins) and Strength (e1RM chart appears after 1+ completed set).
+6. **Sync:** with the backend running (below), Profile → "Sign in to enable sync" → create an
+   account → log something → "Sync now". Kill the app, reinstall (simulating a second device with
+   the same account), sign in again → the logged item should reappear after sync.
+7. **HealthKit:** Profile → "Connect Apple Health" → accept the rationale screen → system prompt
+   → grant access → Today's step/sleep rings populate from Health (real device with Health data).
+8. **Barcode → OFF lookup:** Log-meal sheet → "+" → "Scan barcode" (real device) → scan any
+   packaged food → product logs directly from Open Food Facts.
+9. **Widget:** add the FitTrack widget to the Home Screen → shows the live calorie ring; log a
+   meal in-app → widget updates within a few seconds (`WidgetCenter.reloadTimelines`).
+10. **Face ID lock:** Profile → enable "Face ID app lock" → background the app (Home button/swipe)
+    → app-switcher shows the FitTrack logo, not your data → reopen → Face ID/passcode prompt
+    blocks content until authenticated.
 
-## Backend (Phase 2+, not yet built)
+## Backend (accounts, sync, AI meal estimate)
 
-Runs and tests entirely on this Windows machine once implemented:
+Runs and tests entirely on this Windows machine:
 ```
 cd backend
 npm install
-npm test          # vitest
-npm run dev        # against local Postgres (Docker)
+docker compose up -d              # local Postgres on :5433
+cp .env.example .env               # fill in JWT_ACCESS_SECRET (openssl rand -hex 32), etc.
+                                    # ANTHROPIC_API_KEY is optional — without it, /v1/nutrition/estimate
+                                    # returns 503 and the iOS client falls back to manual entry
+npm run db:migrate
+npm run dev                        # API on :3000
+
+cp .env.test.example .env.test     # separate DB (fittrack_test) so tests never touch dev data
+docker exec backend-postgres-1 psql -U fittrack -d fittrack -c "CREATE DATABASE fittrack_test;"
+npm run db:migrate:test
+npm test                           # vitest — 24 tests, real Postgres, no mocks
 ```
+Deploying to Fly.io + Neon: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).

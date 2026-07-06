@@ -68,5 +68,6 @@ private struct SummaryStat: View {
                 .font(Theme.Font.caption13)
                 .foregroundStyle(Theme.Color.textSecondary)
         }
+        .accessibilityElement(children: .combine)
     }
 }

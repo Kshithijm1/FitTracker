@@ -38,7 +38,7 @@ struct FoodResultRow: View {
                         .font(Theme.Font.caption13)
                         .foregroundStyle(Theme.Color.accent)
                     Spacer()
-                    CompactStepper(value: $pendingQuantity, step: 10) { "\(Int($0))g" }
+                    CompactStepper(value: $pendingQuantity, step: 10, label: "quantity in grams") { "\(Int($0))g" }
                         .onChange(of: pendingQuantity) { _, _ in onQuantityChange() }
                 }
                 .transition(.opacity)

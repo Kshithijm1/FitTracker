@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct TodayView: View {
     @Environment(\.modelContext) private var context
@@ -87,6 +88,10 @@ struct TodayView: View {
                     StartWorkoutView()
                 }
             }
+            .onAppear { updateWidgetSnapshot() }
+            .onChange(of: consumed.kcal) { _, _ in updateWidgetSnapshot() }
+            .onChange(of: waterML) { _, _ in updateWidgetSnapshot() }
+            .onChange(of: stepsCount) { _, _ in updateWidgetSnapshot() }
         }
     }
 
@@ -95,6 +100,22 @@ struct TodayView: View {
             context.insert(WaterEntry(amountML: 250))
         }
         Haptics.light()
+    }
+
+    /// Keeps the Today rings widget (PLAN.md §7) in sync — written to the
+    /// shared App Group container every time the ring-relevant data changes.
+    private func updateWidgetSnapshot() {
+        let snapshot = TodaySnapshot(
+            kcalRemaining: MacroMath.remaining(target: goals.calorieTarget, consumed: Int(consumed.kcal)),
+            kcalTarget: goals.calorieTarget,
+            waterGlasses: waterML / 250,
+            waterGoalGlasses: max(goals.waterML / 250, 1),
+            steps: stepsCount,
+            stepGoal: goals.stepTarget,
+            updatedAt: .now
+        )
+        snapshot.save()
+        WidgetCenter.shared.reloadTimelines(ofKind: "TodayRingsWidget")
     }
 }
 
