@@ -7,6 +7,7 @@ struct WorkoutSessionView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(AppContainer.self) private var container
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \Exercise.name) private var allExercises: [Exercise]
 
     @State private var restTimer = RestTimerService()
@@ -87,17 +88,17 @@ struct WorkoutSessionView: View {
             context: context
         )) ?? []
 
-        restTimer.start(seconds: 90)
+        restTimer.start(seconds: 90, exerciseName: exerciseName(for: item.exerciseID))
         Haptics.light()
 
         if let kind = achieved.first {
             Haptics.success()
-            withAnimation {
+            withAnimation(Theme.Motion.spring(reduceMotion: reduceMotion)) {
                 recentPR = (exerciseName(for: item.exerciseID), kind)
             }
             Task {
                 try? await Task.sleep(for: .seconds(2))
-                withAnimation { recentPR = nil }
+                withAnimation(Theme.Motion.spring(reduceMotion: reduceMotion)) { recentPR = nil }
             }
         }
     }

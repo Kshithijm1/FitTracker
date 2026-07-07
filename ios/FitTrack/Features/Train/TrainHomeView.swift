@@ -4,13 +4,15 @@ import SwiftData
 struct TrainHomeView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \Routine.position) private var routines: [Routine]
-    @Query(sort: \Workout.startedAt, order: .reverse) private var allWorkouts: [Workout]
+    // Fetches only the single most recent finished workout — not the
+    // user's entire workout history — since that's all this screen needs.
+    @Query(WorkoutStarter.lastFinishedWorkoutDescriptor) private var lastFinishedWorkouts: [Workout]
 
     @State private var startedWorkout: Workout?
     @State private var showingNewRoutine = false
 
     private var lastFinishedWorkout: Workout? {
-        allWorkouts.first { $0.finishedAt != nil }
+        lastFinishedWorkouts.first
     }
 
     var body: some View {

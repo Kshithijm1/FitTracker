@@ -94,20 +94,22 @@ private struct SetRow: View {
             Text("\(set.index + 1)")
                 .font(Theme.Font.caption13)
                 .foregroundStyle(Theme.Color.textTertiary)
-                .frame(width: 16)
+                .frame(minWidth: 16, alignment: .trailing)
+                .accessibilityLabel("Set \(set.index + 1)")
 
             CompactStepper(value: Binding(
                 get: { set.weightKG },
                 set: { set.weightKG = $0; set.markDirty() }
-            ), step: 2.5)
+            ), step: 2.5, label: "weight")
 
             Text("×")
                 .foregroundStyle(Theme.Color.textTertiary)
+                .accessibilityHidden(true)
 
             CompactStepper(value: Binding(
                 get: { Double(set.reps) },
                 set: { set.reps = Int($0); set.markDirty() }
-            ), step: 1)
+            ), step: 1, label: "reps")
 
             Spacer()
 
@@ -119,6 +121,8 @@ private struct SetRow: View {
             .buttonStyle(.plain)
             .disabled(set.isCompleted)
             .frame(width: 44, height: 44)
+            .accessibilityLabel("Mark set complete")
+            .accessibilityValue(set.isCompleted ? "Completed" : "Not completed")
         }
     }
 }

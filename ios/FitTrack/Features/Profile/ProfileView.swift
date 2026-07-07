@@ -7,6 +7,11 @@ struct ProfileView: View {
     @Query private var profiles: [UserProfile]
     @Query private var goalsList: [Goals]
 
+    @State private var showingSignIn = false
+    @State private var showingDeleteConfirmation = false
+    @State private var deleteError: String?
+    @State private var showingHealthKitPermission = false
+
     private var profile: UserProfile {
         if let existing = profiles.first { return existing }
         let created = UserProfile(displayName: "You")
@@ -43,14 +48,76 @@ struct ProfileView: View {
                     Stepper("Steps: \(goals.stepTarget)", value: Bindable(goals).stepTarget, in: 0...30000, step: 500)
                 }
 
+                Section("Account & Sync") {
+                    if let user = container.auth.currentUser {
+                        LabeledContent("Signed in as", value: user.email ?? user.displayName)
+                        Button("Sync now") {
+                            Task { await container.syncEngine.syncNow() }
+                        }
+                        if container.syncEngine.isSyncing {
+                            Label("Syncing…", systemImage: "arrow.triangle.2.circlepath")
+                                .font(Theme.Font.caption13)
+                                .foregroundStyle(Theme.Color.textSecondary)
+                        } else if let lastSyncedAt = container.syncEngine.lastSyncedAt {
+                            Text("Last synced \(lastSyncedAt.formatted(.relative(presentation: .named)))")
+                                .font(Theme.Font.caption13)
+                                .foregroundStyle(Theme.Color.textSecondary)
+                        }
+                        Button("Sign out") {
+                            Task { await container.auth.signOut() }
+                        }
+                        Button("Delete account", role: .destructive) {
+                            showingDeleteConfirmation = true
+                        }
+                    } else {
+                        Button("Sign in to enable sync") {
+                            showingSignIn = true
+                        }
+                        Text("FitTrack works fully offline without an account. Signing in adds cross-device sync.")
+                            .font(Theme.Font.caption13)
+                            .foregroundStyle(Theme.Color.textSecondary)
+                    }
+                    if let deleteError {
+                        Text(deleteError)
+                            .font(Theme.Font.caption13)
+                            .foregroundStyle(Theme.Color.error)
+                    }
+                }
+
+                if container.healthKit.isHealthDataAvailable {
+                    Section("Apple Health") {
+                        Button(container.healthKit.hasRequestedAccess ? "Refresh from Health" : "Connect Apple Health") {
+                            if container.healthKit.hasRequestedAccess {
+                                Task { await container.healthKit.refreshToday() }
+                            } else {
+                                showingHealthKitPermission = true
+                            }
+                        }
+                        Text("Read-only: steps and sleep. Never synced to FitTrack's servers.")
+                            .font(Theme.Font.caption13)
+                            .foregroundStyle(Theme.Color.textSecondary)
+                    }
+                }
+
                 Section("Security") {
                     Toggle("Face ID app lock", isOn: Bindable(container.appLock).isEnabled)
-                    Text("Sign-in, sync, and account deletion arrive with the backend in Phase 2.")
-                        .font(Theme.Font.caption13)
-                        .foregroundStyle(Theme.Color.textSecondary)
                 }
             }
             .navigationTitle("Profile")
+            .sheet(isPresented: $showingSignIn) {
+                SignInView()
+            }
+            .sheet(isPresented: $showingHealthKitPermission) {
+                HealthKitPermissionView()
+            }
+            .alert("Delete your account?", isPresented: $showingDeleteConfirmation) {
+                Button("Delete", role: .destructive) {
+                    Task { await deleteAccount() }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This permanently deletes your account and synced data from the server. Data already on this device is kept locally.")
+            }
             .onChange(of: profile.unitPreference) { _, _ in profile.markDirty(); try? context.save() }
             .onChange(of: goals.calorieTarget) { _, _ in goals.markDirty(); try? context.save() }
             .onChange(of: goals.proteinG) { _, _ in goals.markDirty(); try? context.save() }
@@ -58,6 +125,14 @@ struct ProfileView: View {
             .onChange(of: goals.fatG) { _, _ in goals.markDirty(); try? context.save() }
             .onChange(of: goals.waterML) { _, _ in goals.markDirty(); try? context.save() }
             .onChange(of: goals.stepTarget) { _, _ in goals.markDirty(); try? context.save() }
+        }
+    }
+
+    private func deleteAccount() async {
+        do {
+            try await container.auth.deleteAccount()
+        } catch {
+            deleteError = "Couldn't delete your account. Check your connection and try again."
         }
     }
 }

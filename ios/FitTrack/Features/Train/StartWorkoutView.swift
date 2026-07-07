@@ -8,12 +8,12 @@ struct StartWorkoutView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Routine.position) private var routines: [Routine]
-    @Query(sort: \Workout.startedAt, order: .reverse) private var allWorkouts: [Workout]
+    @Query(WorkoutStarter.lastFinishedWorkoutDescriptor) private var lastFinishedWorkouts: [Workout]
 
     @State private var startedWorkout: Workout?
 
     private var lastFinishedWorkout: Workout? {
-        allWorkouts.first { $0.finishedAt != nil }
+        lastFinishedWorkouts.first
     }
 
     var body: some View {
