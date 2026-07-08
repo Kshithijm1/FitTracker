@@ -21,7 +21,7 @@
     "@anthropic-ai/sdk": "^0.110.0",
     "@fastify/rate-limit": "^10.1.1",
     "argon2": "^0.41.1",
-    "dotenv": "^16.4.5",
+    "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "fastify": "^5.1.0",
     "jose": "^5.9.6",
