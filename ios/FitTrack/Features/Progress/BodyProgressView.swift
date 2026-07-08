@@ -83,16 +83,23 @@ struct BodyProgressView: View {
                     Button("Add") { showingLogMeasurement = true }
                 }
 
-                ForEach(measurements.prefix(10)) { measurement in
-                    HStack {
-                        Text(measurement.site.rawValue.capitalized)
-                            .foregroundStyle(Theme.Color.textPrimary)
-                        Spacer()
-                        Text("\(measurement.valueCM.formatted(.number.precision(.fractionLength(1)))) cm")
-                            .foregroundStyle(Theme.Color.textSecondary)
-                        Text(measurement.date.formatted(date: .abbreviated, time: .omitted))
-                            .font(Theme.Font.caption13)
-                            .foregroundStyle(Theme.Color.textTertiary)
+                if measurements.isEmpty {
+                    Text("Track waist, chest, arms, and more alongside your weight trend.")
+                        .font(Theme.Font.caption13)
+                        .foregroundStyle(Theme.Color.textSecondary)
+                } else {
+                    ForEach(measurements.prefix(10)) { measurement in
+                        HStack {
+                            Text(measurement.site.rawValue.capitalized)
+                                .foregroundStyle(Theme.Color.textPrimary)
+                            Spacer()
+                            Text("\(measurement.valueCM.formatted(.number.precision(.fractionLength(1)))) cm")
+                                .foregroundStyle(Theme.Color.textSecondary)
+                            Text(measurement.date.formatted(date: .abbreviated, time: .omitted))
+                                .font(Theme.Font.caption13)
+                                .foregroundStyle(Theme.Color.textTertiary)
+                        }
+                        .accessibilityElement(children: .combine)
                     }
                 }
             }

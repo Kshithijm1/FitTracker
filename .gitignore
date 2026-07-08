@@ -16,6 +16,7 @@ ios/DerivedData/
 backend/node_modules/
 backend/dist/
 backend/.env
+backend/.env.test
 
 # Editor
 .vscode/

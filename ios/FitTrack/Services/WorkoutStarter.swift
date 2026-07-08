@@ -5,6 +5,17 @@ import SwiftData
 /// the Today quick-start card and the Train tab, so routine/repeat-last
 /// semantics stay in one place.
 enum WorkoutStarter {
+    /// Fetches only the single most recent finished workout — not the
+    /// user's entire history — for "Repeat last workout" cards.
+    static var lastFinishedWorkoutDescriptor: FetchDescriptor<Workout> {
+        var descriptor = FetchDescriptor<Workout>(
+            predicate: #Predicate { $0.finishedAt != nil },
+            sortBy: [SortDescriptor(\.startedAt, order: .reverse)]
+        )
+        descriptor.fetchLimit = 1
+        return descriptor
+    }
+
     @discardableResult
     static func start(from routine: Routine?, context: ModelContext) -> Workout {
         let workout = Workout(routineID: routine?.id)

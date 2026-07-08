@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # Backend (Node/npm) — the only automatable dependency surface today.
+  # iOS ships zero third-party SwiftPM dependencies by design (PLAN.md §1),
+  # so there is nothing for Dependabot to scan there yet; add a
+  # `package-ecosystem: "swift"` entry if that ever changes.
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      dev-dependencies:
+        dependency-type: "development"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

@@ -3,9 +3,9 @@ import SwiftData
 
 struct NutritionHomeView: View {
     @Environment(\.modelContext) private var context
-    @Query private var allFoodItems: [FoodItem]
     @Query private var todayLogs: [FoodLog]
     @State private var showingLogSheet = false
+    @State private var foodNamesByID: [UUID: String] = [:]
 
     init() {
         let start = Calendar.current.startOfDay(for: .now)
@@ -17,7 +17,19 @@ struct NutritionHomeView: View {
     }
 
     private func foodName(for id: UUID) -> String {
-        allFoodItems.first { $0.id == id }?.name ?? "Food"
+        foodNamesByID[id] ?? "Food"
+    }
+
+    /// Looks up only the handful of `FoodItem`s referenced by today's logs
+    /// — not the whole (potentially large, remote-search-cached) table.
+    private func refreshFoodNames() {
+        let ids = Set(todayLogs.map(\.foodItemID))
+        guard !ids.isEmpty else {
+            foodNamesByID = [:]
+            return
+        }
+        let items = (try? context.fetch(FetchDescriptor<FoodItem>(predicate: #Predicate { ids.contains($0.id) }))) ?? []
+        foodNamesByID = Dictionary(uniqueKeysWithValues: items.map { ($0.id, $0.name) })
     }
 
     var body: some View {
@@ -61,11 +73,14 @@ struct NutritionHomeView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .accessibilityLabel("Log a meal")
                 }
             }
             .sheet(isPresented: $showingLogSheet) {
                 LogMealSheet()
             }
+            .onAppear { refreshFoodNames() }
+            .onChange(of: todayLogs.count) { _, _ in refreshFoodNames() }
         }
     }
 

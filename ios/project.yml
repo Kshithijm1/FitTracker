@@ -38,11 +38,14 @@ targets:
         NSFaceIDUsageDescription: "FitTrack can lock the app behind Face ID to keep your health data private."
         ITSAppUsesNonExemptEncryption: false
         UIBackgroundModes: []
+        NSSupportsLiveActivities: true
     entitlements:
       path: FitTrack/FitTrack.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
+        com.apple.developer.applesignin:
+          - Default
         com.apple.security.application-groups:
           - group.com.fittrack.shared
         keychain-access-groups:
@@ -68,6 +71,13 @@ targets:
     deploymentTarget: "18.0"
     sources:
       - path: FitTrackWidgets
+      # Shared with the FitTrack target — the widget reads what the app
+      # writes to the App Group container; kept as plain files in both
+      # targets rather than a separate framework for a handful of files.
+      - path: FitTrack/Services/TodaySnapshot.swift
+        group: FitTrackWidgets
+      - path: FitTrack/Services/RestTimerActivityAttributes.swift
+        group: FitTrackWidgets
     info:
       path: FitTrackWidgets/Info.plist
       properties:

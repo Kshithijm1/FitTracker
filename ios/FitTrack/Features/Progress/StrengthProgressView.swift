@@ -5,13 +5,16 @@ import Charts
 /// Per-exercise e1RM/top-set line chart, exercise picker sorted by
 /// most-trained (PLAN.md §3).
 struct StrengthProgressView: View {
-    @Query private var allSets: [SetEntry]
+    // Filtered at the fetch level (completed, non-warmup only) rather than
+    // pulling every set ever logged into memory and filtering client-side.
+    @Query(filter: #Predicate<SetEntry> { $0.completedAt != nil && !$0.isWarmup })
+    private var trainingSets: [SetEntry]
     @Query(sort: \Exercise.name) private var allExercises: [Exercise]
 
     @State private var selectedExerciseID: UUID?
 
     private var mostTrainedExerciseIDs: [UUID] {
-        let counts = Dictionary(grouping: allSets.filter(\.isCompleted)) { $0.workoutItem?.exerciseID }
+        let counts = Dictionary(grouping: trainingSets) { $0.workoutItem?.exerciseID }
             .compactMapValues { $0.count }
         return counts.compactMap { key, _ in key }
             .sorted { (counts[$0] ?? 0) > (counts[$1] ?? 0) }
@@ -23,8 +26,8 @@ struct StrengthProgressView: View {
 
     private var chartPoints: [(date: Date, e1RM: Double)] {
         guard let exerciseID = currentExerciseID else { return [] }
-        return allSets
-            .filter { $0.isCompleted && !$0.isWarmup && $0.workoutItem?.exerciseID == exerciseID }
+        return trainingSets
+            .filter { $0.workoutItem?.exerciseID == exerciseID }
             .compactMap { set -> (Date, Double)? in
                 guard let date = set.completedAt else { return nil }
                 return (date, StrengthMath.estimatedOneRepMax(weightKG: set.weightKG, reps: set.reps))

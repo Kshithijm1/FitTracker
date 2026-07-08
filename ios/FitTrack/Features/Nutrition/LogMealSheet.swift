@@ -5,23 +5,26 @@ extension FoodItem: Identifiable {}
 extension SavedMeal: Identifiable {}
 
 /// Target: 2 taps for a repeat meal (PLAN.md §3). Opens directly on
-/// recents/frequents; typing merges in local results instantly, remote
-/// results arrive async once Phase 3 wires providers into
-/// `FoodSearchService.remoteProviders`.
+/// recents/frequents; typing shows local results instantly, remote OFF/USDA
+/// results merge in async (skeleton shimmer while in flight — the only
+/// loading state in the app, per PLAN.md §3).
 struct LogMealSheet: View {
     var slot: MealSlot = .current()
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(AppContainer.self) private var container
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \SavedMeal.name) private var savedMeals: [SavedMeal]
 
     @State private var searchText = ""
     @State private var results: [FoodItem] = []
+    @State private var isSearchingRemote = false
     @State private var justLoggedItem: FoodItem?
     @State private var pendingQuantity: Double = 100
     @State private var showingFreeform = false
-    @State private var showingBarcodeUnavailable = false
+    @State private var showingBarcodeScanner = false
+    @State private var barcodeLookupError: String?
 
     var body: some View {
         NavigationStack {
@@ -37,7 +40,7 @@ struct LogMealSheet: View {
                 }
 
                 Section(searchText.isEmpty ? "Recents & frequents" : "Results") {
-                    if results.isEmpty {
+                    if results.isEmpty && !isSearchingRemote {
                         ContentUnavailableView(
                             searchText.isEmpty ? "No recent foods yet" : "No matches",
                             systemImage: "fork.knife",
@@ -57,14 +60,24 @@ struct LogMealSheet: View {
                                 onQuantityChange: { updateLoggedQuantity(item) }
                             )
                         }
+                        if isSearchingRemote {
+                            RemoteSearchSkeletonRow()
+                        }
                     }
+                }
+
+                if let barcodeLookupError {
+                    Text(barcodeLookupError)
+                        .font(Theme.Font.caption13)
+                        .foregroundStyle(Theme.Color.error)
                 }
             }
             .searchable(text: $searchText, prompt: "Search foods")
-            .onChange(of: searchText) { _, newValue in
-                refreshResults(query: newValue)
+            .onAppear { refreshLocalResults(query: searchText) }
+            .task(id: searchText) {
+                refreshLocalResults(query: searchText)
+                await mergeInRemoteResults(query: searchText)
             }
-            .onAppear { refreshResults(query: searchText) }
             .navigationTitle("Log \(slot.rawValue.capitalized)")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -76,24 +89,53 @@ struct LogMealSheet: View {
                             showingFreeform = true
                         }
                         Button("Scan barcode", systemImage: "barcode.viewfinder") {
-                            showingBarcodeUnavailable = true
+                            showingBarcodeScanner = true
                         }
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .accessibilityLabel("Add food")
                 }
             }
             .sheet(isPresented: $showingFreeform) {
                 FreeformDescribeView(slot: slot)
             }
-            .alert("Barcode scanning arrives in Phase 3", isPresented: $showingBarcodeUnavailable) {
-                Button("OK", role: .cancel) {}
+            .sheet(isPresented: $showingBarcodeScanner) {
+                BarcodeScannerView { barcode in
+                    Task { await handleScannedBarcode(barcode) }
+                }
             }
         }
     }
 
-    private func refreshResults(query: String) {
+    private func refreshLocalResults(query: String) {
         results = (try? container.foodSearch.searchLocal(query: query)) ?? []
+    }
+
+    private func mergeInRemoteResults(query: String) async {
+        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        isSearchingRemote = true
+        defer { isSearchingRemote = false }
+
+        let remoteResults = await container.foodSearch.searchRemote(query: query)
+        guard !Task.isCancelled, searchText == query else { return }
+
+        let existingIDs = Set(results.map(\.id))
+        results.append(contentsOf: remoteResults.filter { !existingIDs.contains($0.id) })
+    }
+
+    private func handleScannedBarcode(_ barcode: String) async {
+        showingBarcodeScanner = false
+        do {
+            guard let item = try await container.foodSearch.lookupBarcode(barcode) else {
+                barcodeLookupError = "No product found for that barcode."
+                return
+            }
+            barcodeLookupError = nil
+            logItem(item)
+        } catch {
+            barcodeLookupError = "Barcode lookup failed. Check your connection and try again."
+        }
     }
 
     private func logItem(_ item: FoodItem) {
@@ -106,10 +148,12 @@ struct LogMealSheet: View {
 
         Haptics.light()
         pendingQuantity = defaultQuantity
-        withAnimation { justLoggedItem = item }
+        withAnimation(Theme.Motion.quickSpring(reduceMotion: reduceMotion)) { justLoggedItem = item }
         Task {
             try? await Task.sleep(for: .seconds(3))
-            withAnimation { if justLoggedItem?.id == item.id { justLoggedItem = nil } }
+            withAnimation(Theme.Motion.quickSpring(reduceMotion: reduceMotion)) {
+                if justLoggedItem?.id == item.id { justLoggedItem = nil }
+            }
         }
     }
 
@@ -138,5 +182,27 @@ struct LogMealSheet: View {
         try? context.save()
         Haptics.light()
         dismiss()
+    }
+}
+
+/// Skeleton shimmer while remote OFF/USDA results are in flight — the only
+/// loading state in the app (everything else renders local-first, PLAN.md §3).
+private struct RemoteSearchSkeletonRow: View {
+    @State private var isPulsing = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+            RoundedRectangle(cornerRadius: 4).frame(width: 160, height: 14)
+            RoundedRectangle(cornerRadius: 4).frame(width: 90, height: 12)
+        }
+        .foregroundStyle(Theme.Color.surface2)
+        .opacity(isPulsing ? 0.4 : 1)
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                isPulsing = true
+            }
+        }
     }
 }
