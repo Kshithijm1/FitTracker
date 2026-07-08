@@ -29,12 +29,12 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^22.9.0",
+    "@types/node": "^26.1.0",
     "@types/pg": "^8.11.10",
     "cross-env": "^10.1.0",
     "drizzle-kit": "^0.31.10",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3",
-    "vitest": "^2.1.4"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
   }
 }
