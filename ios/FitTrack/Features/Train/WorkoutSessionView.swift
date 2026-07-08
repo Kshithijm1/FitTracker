@@ -82,11 +82,16 @@ struct WorkoutSessionView: View {
     private func handleSetCompleted(item: WorkoutItem) {
         guard let lastSet = item.sets.sorted(by: { $0.index < $1.index }).last(where: \.isCompleted) else { return }
 
-        let achieved = (try? container.prDetector.evaluate(
+        // FETCH CONTENT: Grab the database records here outside the service to ensure thread safety
+        let priorRecords = (try? context.fetch(FetchDescriptor<PersonalRecord>())) ?? []
+
+        // Pass the loaded historical records array cleanly into the updated evaluator function signature
+        let achieved = container.prDetector.evaluate(
             set: lastSet,
             exerciseID: item.exerciseID,
+            priorRecords: priorRecords,
             context: context
-        )) ?? []
+        )
 
         restTimer.start(seconds: 90, exerciseName: exerciseName(for: item.exerciseID))
         Haptics.light()

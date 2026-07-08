@@ -1,12 +1,18 @@
+import Foundation
 import ActivityKit
 
-/// Shared between the app (starts/ends the activity) and `FitTrackWidgets`
-/// (renders it) — same sharing convention as `TodaySnapshot.swift`, see
-/// `ios/project.yml`. Lock-screen/Dynamic-Island rest timer (PLAN.md §3/§7).
-struct RestTimerActivityAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
-        var endsAt: Date
+public struct RestTimerActivityAttributes: ActivityAttributes, Sendable { // <-- ADD SENDABLE HERE
+    public struct ContentState: Codable, Hashable, Sendable {    // <-- ADD SENDABLE HERE
+        public var endsAt: Date
+        
+        public init(endsAt: Date) {
+            self.endsAt = endsAt
+        }
     }
 
-    var exerciseName: String
+    public var exerciseName: String
+    
+    public init(exerciseName: String) {
+        self.exerciseName = exerciseName
+    }
 }

@@ -5,39 +5,53 @@ import Testing
 
 @MainActor
 struct PRDetectorServiceTests {
-    private func makeContext() throws -> ModelContext {
-        let schema = Schema([PersonalRecord.self])
-        let container = try ModelContainer(
-            for: schema,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-        )
-        return container.mainContext
+    
+    // FIXED: Return a tuple containing the container so it stays alive in memory during the test execution
+    private func createTestStack() throws -> (ModelContainer, ModelContext) {
+        let schema = Schema([SetEntry.self, PersonalRecord.self])
+        let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: schema, configurations: [configuration])
+        return (container, container.mainContext)
     }
 
     @Test func firstSetForExerciseIsAPRInEveryCategory() throws {
-        let context = try makeContext()
+        let (_container, context) = try createTestStack() // Retains the container instance!
         let detector = PRDetectorService()
         let exerciseID = UUID()
-        let entry = SetEntry(index: 0, weightKG: 100, reps: 8)
+        
+        let entry = SetEntry(
+            id: UUID(),
+            index: 0,
+            weightKG: 100.0,
+            reps: 8,
+            rpe: nil,
+            isWarmup: false
+        )
 
-        let achieved = try detector.evaluate(set: entry, exerciseID: exerciseID, context: context)
+        let achieved = detector.evaluate(set: entry, exerciseID: exerciseID, priorRecords: [], context: context)
 
-        #expect(Set(achieved) == Set([.weight, .reps, .volume, .e1RM]))
+        #expect(Set(achieved) == Set<PersonalRecordKind>([.weight, .reps, .volume, .e1RM]))
     }
 
     @Test func lighterSetAfterAPRIsNotAPR() throws {
-        let context = try makeContext()
+        let (_container, context) = try createTestStack() // Retains the container instance!
         let detector = PRDetectorService()
         let exerciseID = UUID()
+        let setEntryID = UUID()
 
-        _ = try detector.evaluate(
-            set: SetEntry(index: 0, weightKG: 100, reps: 8),
+        let historicalPRs = [
+            PersonalRecord(exerciseID: exerciseID, kind: .weight, value: 100.0, setEntryID: setEntryID),
+            PersonalRecord(exerciseID: exerciseID, kind: .reps, value: 8.0, setEntryID: setEntryID),
+            PersonalRecord(exerciseID: exerciseID, kind: .volume, value: 800.0, setEntryID: setEntryID),
+            PersonalRecord(exerciseID: exerciseID, kind: .e1RM, value: 126.0, setEntryID: setEntryID)
+        ]
+        
+        let subMaximalEntry = SetEntry(id: UUID(), index: 1, weightKG: 90.0, reps: 8, rpe: nil, isWarmup: false)
+        
+        let secondAchieved = detector.evaluate(
+            set: subMaximalEntry,
             exerciseID: exerciseID,
-            context: context
-        )
-        let secondAchieved = try detector.evaluate(
-            set: SetEntry(index: 0, weightKG: 90, reps: 8),
-            exerciseID: exerciseID,
+            priorRecords: historicalPRs,
             context: context
         )
 
@@ -45,12 +59,13 @@ struct PRDetectorServiceTests {
     }
 
     @Test func warmupSetsNeverCountAsPRs() throws {
-        let context = try makeContext()
+        let (_container, context) = try createTestStack() // Retains the container instance!
         let detector = PRDetectorService()
         let exerciseID = UUID()
-        let entry = SetEntry(index: 0, weightKG: 999, reps: 20, isWarmup: true)
+        
+        let entry = SetEntry(id: UUID(), index: 0, weightKG: 999.0, reps: 20, rpe: nil, isWarmup: true)
 
-        let achieved = try detector.evaluate(set: entry, exerciseID: exerciseID, context: context)
+        let achieved = detector.evaluate(set: entry, exerciseID: exerciseID, priorRecords: [], context: context)
 
         #expect(achieved.isEmpty)
     }

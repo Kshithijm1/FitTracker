@@ -46,7 +46,7 @@ struct ProgressRing: View {
 }
 
 #Preview {
-    ProgressRing(progress: 0.62, value: "1,430", label: "kcal left")
+    ProgressRing(progress: 0.62, label: "kcal left", value: "1,430")
         .frame(width: 160, height: 160)
         .padding()
         .background(Theme.Color.background)

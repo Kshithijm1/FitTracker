@@ -158,8 +158,9 @@ struct LogMealSheet: View {
     }
 
     private func updateLoggedQuantity(_ item: FoodItem) {
+        let targetItemId = item.id // <-- FIXED: Pull into local constant
         var descriptor = FetchDescriptor<FoodLog>(
-            predicate: #Predicate<FoodLog> { $0.foodItemID == item.id },
+            predicate: #Predicate<FoodLog> { $0.foodItemID == targetItemId },
             sortBy: [SortDescriptor(\.date, order: .reverse)]
         )
         descriptor.fetchLimit = 1
@@ -172,9 +173,11 @@ struct LogMealSheet: View {
 
     private func logSavedMeal(_ meal: SavedMeal) {
         for savedItem in meal.items {
+            let targetFoodItemId = savedItem.foodItemID // <-- FIXED: Pull into local constant
             guard let item = try? context.fetch(
-                FetchDescriptor<FoodItem>(predicate: #Predicate<FoodItem> { $0.id == savedItem.foodItemID })
+                FetchDescriptor<FoodItem>(predicate: #Predicate<FoodItem> { $0.id == targetFoodItemId })
             ).first else { continue }
+            
             let snapshot = MacroMath.scaleMacros(per100g: item.per100g, quantityG: savedItem.quantityG)
             context.insert(FoodLog(slot: slot, foodItemID: item.id, quantityG: savedItem.quantityG, macroSnapshot: snapshot))
             item.recordUse()

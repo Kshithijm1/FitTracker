@@ -26,7 +26,10 @@ struct LockScreenView: View {
             Spacer()
 
             Button("Unlock") {
-                Task { await container.appLock.unlockIfNeeded() }
+                // FIXED: Explicitly isolate the button's task closure to the @MainActor
+                Task { @MainActor in
+                    await container.appLock.unlockIfNeeded()
+                }
             }
             .font(Theme.Font.bodyEmphasized17)
             .foregroundStyle(Theme.Color.onAccent)
@@ -38,7 +41,8 @@ struct LockScreenView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Theme.Color.background)
-        .task {
+        // FIXED: Explicitly isolate the initial lifecycle task to the @MainActor
+        .task { @MainActor in
             await container.appLock.unlockIfNeeded()
         }
     }

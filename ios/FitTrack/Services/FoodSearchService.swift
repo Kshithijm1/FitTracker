@@ -5,7 +5,7 @@ import SwiftData
 /// search works local-cache-only, which already covers recents/frequents/
 /// custom foods. Phase 3 adds `USDAProvider`/`OpenFoodFactsProvider` and
 /// wires them in via `FoodSearchService.remoteProviders`.
-protocol RemoteFoodProvider {
+protocol RemoteFoodProvider: Sendable {
     func search(query: String) async throws -> [FoodItem]
     func lookup(barcode: String) async throws -> FoodItem?
 }
@@ -51,7 +51,9 @@ final class FoodSearchService {
     /// are instant and work offline thereafter (PLAN.md §1 Nutrition data).
     func searchRemote(query: String) async -> [FoodItem] {
         var merged: [FoodItem] = []
-        for provider in remoteProviders {
+        let currentProviders = remoteProviders // Decouple from MainActor-isolated self
+        
+        for provider in currentProviders {
             if let results = try? await provider.search(query: query) {
                 merged.append(contentsOf: results)
                 results.forEach { context.insert($0) }
@@ -71,7 +73,9 @@ final class FoodSearchService {
         if let cached = try context.fetch(descriptor).first {
             return cached
         }
-        for provider in remoteProviders {
+        
+        let currentProviders = remoteProviders // Decouple from MainActor-isolated self
+        for provider in currentProviders {
             if let match = try await provider.lookup(barcode: barcode) {
                 context.insert(match)
                 try? context.save()

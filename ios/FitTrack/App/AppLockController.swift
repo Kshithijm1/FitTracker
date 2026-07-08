@@ -5,6 +5,7 @@ import LocalAuthentication
 /// persists across launches; `isUnlocked` resets to `false` on every
 /// background→foreground transition (`FitTrackApp` calls `lock()` on
 /// `.background`), so the gate is real rather than a one-time-per-process check.
+@MainActor // <-- ADD THIS TO ISOLATE ALL PROPERTIES AND METHODS TO THE MAIN THREAD
 @Observable
 final class AppLockController {
     private static let enabledDefaultsKey = "fittrack.appLock.enabled"
@@ -51,10 +52,11 @@ final class AppLockController {
         }
 
         do {
-            isUnlocked = try await context.evaluatePolicy(
+            let success = try await context.evaluatePolicy(
                 .deviceOwnerAuthentication,
                 localizedReason: "Unlock FitTrack"
             )
+            isUnlocked = success
             lastError = nil
         } catch {
             isUnlocked = false

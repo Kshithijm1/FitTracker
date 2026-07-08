@@ -20,8 +20,8 @@ struct CalorieRingSection: View {
                 ProgressRing(
                     progress: fraction,
                     lineWidth: 12,
-                    value: remainingKcal.formatted(),
-                    label: "kcal left"
+                    label: "kcal left", // <-- Put label here first
+                    value: remainingKcal.formatted()
                 )
                 .frame(width: 160, height: 160)
 

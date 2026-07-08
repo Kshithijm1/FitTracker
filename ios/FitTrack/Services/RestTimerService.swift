@@ -1,6 +1,6 @@
 import Foundation
 import UserNotifications
-import ActivityKit
+@preconcurrency import ActivityKit // <-- FIXED: Relax strict compiler tracking for ActivityKit types
 import Observation
 
 /// Rest timer surfaced as both a local notification (fires even if the app
@@ -69,8 +69,10 @@ final class RestTimerService {
     }
 
     private func endLiveActivity() async {
-        guard let activity else { return }
-        await activity.end(nil, dismissalPolicy: .immediate)
-        self.activity = nil
+        guard let currentActivity = activity else { return }
+        self.activity = nil // Wipe state on MainActor immediately
+        
+        // FIXED: Clean inline invocation is safe under @preconcurrency
+        await currentActivity.end(nil, dismissalPolicy: .immediate)
     }
 }
