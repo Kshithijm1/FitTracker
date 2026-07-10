@@ -19,22 +19,24 @@ struct CompactStepper: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.xs) {
+        HStack(spacing: Theme.Spacing.xxs) {
             stepButton(systemImage: "minus") {
                 adjust(by: -step)
             }
 
             Text(formatter(value))
-                .font(Theme.Font.numeral(17))
+                .font(Theme.Font.numeral(15))
                 .foregroundStyle(Theme.Color.textPrimary)
-                .frame(minWidth: 44)
+                .frame(minWidth: 32)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
                 .contentTransition(.numericText())
 
             stepButton(systemImage: "plus") {
                 adjust(by: step)
             }
         }
-        .padding(.horizontal, Theme.Spacing.xs)
+        .padding(.horizontal, Theme.Spacing.xxs)
         .padding(.vertical, Theme.Spacing.xxs)
         .background(Theme.Color.surface2, in: Capsule())
         .accessibilityElement(children: .combine)
@@ -59,9 +61,9 @@ struct CompactStepper: View {
     private func stepButton(systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemImage)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Theme.Color.textPrimary)
-                .frame(width: 44, height: 44)
+                .frame(width: 32, height: 32)
         }
         .buttonStyle(.plain)
         .contentShape(Rectangle())

@@ -67,6 +67,11 @@ final class FoodItem: Syncable {
 final class SavedMeal: Syncable {
     @Attribute(.unique) var id: UUID
     var name: String
+    /// How many people/portions the recipe makes; logging one serving
+    /// divides the summed ingredient macros by this. 1 = a plain saved meal.
+    var servingsCount: Int = 1
+    /// Where this came from: "manual" | "recipe" | "import" (AI URL import).
+    var origin: String = "manual"
     var updatedAt: Date
     var deletedAt: Date?
     var dirty: Bool
@@ -74,9 +79,11 @@ final class SavedMeal: Syncable {
     @Relationship(deleteRule: .cascade, inverse: \SavedMealItem.savedMeal)
     var items: [SavedMealItem]
 
-    init(id: UUID = UUID(), name: String) {
+    init(id: UUID = UUID(), name: String, servingsCount: Int = 1, origin: String = "manual") {
         self.id = id
         self.name = name
+        self.servingsCount = max(servingsCount, 1)
+        self.origin = origin
         self.items = []
         self.updatedAt = .now
         self.deletedAt = nil

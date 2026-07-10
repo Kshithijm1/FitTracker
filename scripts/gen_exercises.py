@@ -168,18 +168,57 @@ EXERCISES = [
     ("Battle Ropes", ["shoulders", "core"], "bodyweight"),
 
     # Cardio
-    ("Running", ["cardio"], "bodyweight"),
-    ("Cycling", ["cardio", "quads"], "machine"),
-    ("Rowing", ["cardio", "back"], "machine"),
+    ("Treadmill Run", ["cardio"], "machine"),
+    ("Running (Outdoor)", ["cardio"], "bodyweight"),
+    ("Walking", ["cardio"], "bodyweight"),
+    ("Incline Walk", ["cardio", "quads", "glutes"], "machine"),
+    ("Cycling (Stationary)", ["cardio", "quads"], "machine"),
+    ("Cycling (Outdoor)", ["cardio", "quads"], "bodyweight"),
+    ("Assault Bike", ["cardio", "quads"], "machine"),
+    ("Rowing Machine", ["cardio", "back"], "machine"),
+    ("Ski Erg", ["cardio", "back", "shoulders"], "machine"),
     ("Jump Rope", ["cardio", "calves"], "bodyweight"),
     ("Stair Climber", ["cardio", "quads", "glutes"], "machine"),
     ("Elliptical", ["cardio"], "machine"),
     ("Swimming", ["cardio", "back", "shoulders"], "bodyweight"),
-    ("Incline Walk", ["cardio", "quads", "glutes"], "machine"),
+    ("Hiking", ["cardio", "quads", "glutes"], "bodyweight"),
 ]
 
+# Tracking kind: which inputs a set of this exercise records.
+# Mirrors `ExerciseTrackingKind` in ios/FitTrack/Models/Training.swift.
+TIME_ONLY = {
+    "Plank", "Side Plank", "Copenhagen Plank", "Dead Bug",
+    "Battle Ropes", "Mountain Climber",
+}
+SPEED_INCLINE = {  # duration + speed + incline
+    "Treadmill Run", "Incline Walk", "Stair Climber", "Elliptical",
+}
+DISTANCE = {  # duration + distance
+    "Running (Outdoor)", "Walking", "Cycling (Stationary)", "Cycling (Outdoor)",
+    "Assault Bike", "Rowing Machine", "Ski Erg", "Swimming", "Hiking",
+    "Jump Rope", "Sled Push", "Sled Pull", "Farmer's Carry",
+}
+
+
+def kind_for(name: str, groups: list[str], equipment: str) -> str:
+    if name in TIME_ONLY:
+        return "timeOnly"
+    if name in SPEED_INCLINE:
+        return "cardioSpeedIncline"
+    if name in DISTANCE:
+        return "cardioDistance"
+    if equipment == "bodyweight":
+        return "bodyweightReps"
+    return "weightReps"
+
+
 out = [
-    {"name": name, "muscleGroups": groups, "equipment": equipment}
+    {
+        "name": name,
+        "muscleGroups": groups,
+        "equipment": equipment,
+        "kind": kind_for(name, groups, equipment),
+    }
     for name, groups, equipment in EXERCISES
 ]
 

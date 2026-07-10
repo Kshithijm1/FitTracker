@@ -6,7 +6,8 @@
       "triceps",
       "shoulders"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Incline Barbell Bench Press",
@@ -15,7 +16,8 @@
       "shoulders",
       "triceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Decline Barbell Bench Press",
@@ -23,7 +25,8 @@
       "chest",
       "triceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Dumbbell Bench Press",
@@ -32,7 +35,8 @@
       "triceps",
       "shoulders"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Incline Dumbbell Bench Press",
@@ -40,21 +44,24 @@
       "chest",
       "shoulders"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Decline Dumbbell Bench Press",
     "muscleGroups": [
       "chest"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Dumbbell Fly",
     "muscleGroups": [
       "chest"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Incline Dumbbell Fly",
@@ -62,21 +69,24 @@
       "chest",
       "shoulders"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Cable Fly",
     "muscleGroups": [
       "chest"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Cable Crossover",
     "muscleGroups": [
       "chest"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Machine Chest Press",
@@ -84,14 +94,16 @@
       "chest",
       "triceps"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Pec Deck",
     "muscleGroups": [
       "chest"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Push-Up",
@@ -100,7 +112,8 @@
       "triceps",
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Diamond Push-Up",
@@ -108,7 +121,8 @@
       "triceps",
       "chest"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Dips (Chest)",
@@ -116,7 +130,8 @@
       "chest",
       "triceps"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Smith Machine Bench Press",
@@ -124,7 +139,8 @@
       "chest",
       "triceps"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Deadlift",
@@ -133,7 +149,8 @@
       "hamstrings",
       "glutes"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Sumo Deadlift",
@@ -142,7 +159,8 @@
       "hamstrings",
       "back"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Trap Bar Deadlift",
@@ -151,7 +169,8 @@
       "glutes",
       "hamstrings"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Rack Pull",
@@ -159,7 +178,8 @@
       "back",
       "hamstrings"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Barbell Row",
@@ -167,7 +187,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Pendlay Row",
@@ -175,7 +196,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "T-Bar Row",
@@ -183,7 +205,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Meadows Row",
@@ -191,7 +214,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Dumbbell Row",
@@ -199,7 +223,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Chest Supported Row",
@@ -207,7 +232,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Seated Cable Row",
@@ -215,7 +241,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Machine Row",
@@ -223,7 +250,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Lat Pulldown",
@@ -231,7 +259,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Close-Grip Lat Pulldown",
@@ -239,7 +268,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Pull-Up",
@@ -247,7 +277,8 @@
       "back",
       "biceps"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Chin-Up",
@@ -255,14 +286,16 @@
       "back",
       "biceps"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Straight-Arm Pulldown",
     "muscleGroups": [
       "back"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Face Pull",
@@ -270,7 +303,8 @@
       "shoulders",
       "back"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Good Morning",
@@ -279,7 +313,8 @@
       "back",
       "glutes"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Hyperextension",
@@ -288,7 +323,8 @@
       "glutes",
       "hamstrings"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Superman",
@@ -296,7 +332,8 @@
       "back",
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Overhead Press",
@@ -304,7 +341,8 @@
       "shoulders",
       "triceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Seated Dumbbell Press",
@@ -312,7 +350,8 @@
       "shoulders",
       "triceps"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Arnold Press",
@@ -320,7 +359,8 @@
       "shoulders",
       "triceps"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Machine Shoulder Press",
@@ -328,7 +368,8 @@
       "shoulders",
       "triceps"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Landmine Press",
@@ -336,28 +377,32 @@
       "shoulders",
       "chest"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Lateral Raise",
     "muscleGroups": [
       "shoulders"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Cable Lateral Raise",
     "muscleGroups": [
       "shoulders"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Front Raise",
     "muscleGroups": [
       "shoulders"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Rear Delt Fly",
@@ -365,7 +410,8 @@
       "shoulders",
       "back"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Reverse Pec Deck",
@@ -373,7 +419,8 @@
       "shoulders",
       "back"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Upright Row",
@@ -381,7 +428,8 @@
       "shoulders",
       "back"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Barbell Shrug",
@@ -389,7 +437,8 @@
       "shoulders",
       "back"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Dumbbell Shrug",
@@ -397,7 +446,8 @@
       "shoulders",
       "back"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Back Squat",
@@ -405,7 +455,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Front Squat",
@@ -413,7 +464,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Zercher Squat",
@@ -422,7 +474,8 @@
       "glutes",
       "back"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Smith Machine Squat",
@@ -430,7 +483,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Hack Squat",
@@ -438,7 +492,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Leg Press",
@@ -446,7 +501,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Single-Leg Press",
@@ -454,14 +510,16 @@
       "quads",
       "glutes"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Leg Extension",
     "muscleGroups": [
       "quads"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Goblet Squat",
@@ -469,7 +527,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Bulgarian Split Squat",
@@ -477,7 +536,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Walking Lunge",
@@ -485,7 +545,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Reverse Lunge",
@@ -493,7 +554,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Curtsy Lunge",
@@ -501,7 +563,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Cossack Squat",
@@ -510,7 +573,8 @@
       "glutes",
       "hamstrings"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Step-Up",
@@ -518,14 +582,16 @@
       "quads",
       "glutes"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Sissy Squat",
     "muscleGroups": [
       "quads"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Romanian Deadlift",
@@ -534,7 +600,8 @@
       "glutes",
       "back"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Stiff-Leg Deadlift",
@@ -542,7 +609,8 @@
       "hamstrings",
       "glutes"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Single-Leg Romanian Deadlift",
@@ -550,28 +618,32 @@
       "hamstrings",
       "glutes"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Leg Curl (Seated)",
     "muscleGroups": [
       "hamstrings"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Leg Curl (Lying)",
     "muscleGroups": [
       "hamstrings"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Nordic Curl",
     "muscleGroups": [
       "hamstrings"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Hip Thrust",
@@ -579,7 +651,8 @@
       "glutes",
       "hamstrings"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Glute Bridge",
@@ -587,7 +660,8 @@
       "glutes",
       "hamstrings"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Cable Pull-Through",
@@ -595,21 +669,24 @@
       "glutes",
       "hamstrings"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Glute Kickback",
     "muscleGroups": [
       "glutes"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Frog Pump",
     "muscleGroups": [
       "glutes"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Copenhagen Plank",
@@ -617,56 +694,64 @@
       "hamstrings",
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "timeOnly"
   },
   {
     "name": "Standing Calf Raise",
     "muscleGroups": [
       "calves"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Seated Calf Raise",
     "muscleGroups": [
       "calves"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Leg Press Calf Raise",
     "muscleGroups": [
       "calves"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Donkey Calf Raise",
     "muscleGroups": [
       "calves"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Barbell Curl",
     "muscleGroups": [
       "biceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "EZ-Bar Curl",
     "muscleGroups": [
       "biceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Dumbbell Curl",
     "muscleGroups": [
       "biceps"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Hammer Curl",
@@ -674,42 +759,48 @@
       "biceps",
       "forearms"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Incline Dumbbell Curl",
     "muscleGroups": [
       "biceps"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Preacher Curl",
     "muscleGroups": [
       "biceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Spider Curl",
     "muscleGroups": [
       "biceps"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Concentration Curl",
     "muscleGroups": [
       "biceps"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Cable Curl",
     "muscleGroups": [
       "biceps"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Zottman Curl",
@@ -717,7 +808,8 @@
       "biceps",
       "forearms"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Cross-Body Hammer Curl",
@@ -725,42 +817,48 @@
       "biceps",
       "forearms"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Triceps Pushdown",
     "muscleGroups": [
       "triceps"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Rope Pushdown",
     "muscleGroups": [
       "triceps"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Overhead Triceps Extension",
     "muscleGroups": [
       "triceps"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Cable Overhead Extension",
     "muscleGroups": [
       "triceps"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Skull Crusher",
     "muscleGroups": [
       "triceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "JM Press",
@@ -768,7 +866,8 @@
       "triceps",
       "chest"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Close-Grip Bench Press",
@@ -776,7 +875,8 @@
       "triceps",
       "chest"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Dips (Triceps)",
@@ -784,7 +884,8 @@
       "triceps",
       "chest"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Tricep Dip Machine",
@@ -792,28 +893,32 @@
       "triceps",
       "chest"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "weightReps"
   },
   {
     "name": "Cable Kickback",
     "muscleGroups": [
       "triceps"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Wrist Curl",
     "muscleGroups": [
       "forearms"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Reverse Wrist Curl",
     "muscleGroups": [
       "forearms"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Reverse Curl",
@@ -821,7 +926,8 @@
       "forearms",
       "biceps"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Farmer's Carry",
@@ -829,77 +935,88 @@
       "forearms",
       "core"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "cardioDistance"
   },
   {
     "name": "Plank",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "timeOnly"
   },
   {
     "name": "Side Plank",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "timeOnly"
   },
   {
     "name": "Crunch",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Cable Crunch",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Hanging Leg Raise",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Hanging Knee Raise",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Russian Twist",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Ab Wheel Rollout",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Sit-Up",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "V-Up",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Mountain Climber",
@@ -907,42 +1024,48 @@
       "core",
       "shoulders"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "timeOnly"
   },
   {
     "name": "Dead Bug",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "timeOnly"
   },
   {
     "name": "Bicycle Crunch",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Woodchopper",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Pallof Press",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "cable"
+    "equipment": "cable",
+    "kind": "weightReps"
   },
   {
     "name": "Landmine Twist",
     "muscleGroups": [
       "core"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Clean",
@@ -951,7 +1074,8 @@
       "quads",
       "shoulders"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Power Clean",
@@ -960,7 +1084,8 @@
       "quads",
       "shoulders"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Snatch",
@@ -969,7 +1094,8 @@
       "quads",
       "shoulders"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Clean and Jerk",
@@ -978,7 +1104,8 @@
       "quads",
       "shoulders"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Thruster",
@@ -986,7 +1113,8 @@
       "quads",
       "shoulders"
     ],
-    "equipment": "barbell"
+    "equipment": "barbell",
+    "kind": "weightReps"
   },
   {
     "name": "Kettlebell Swing",
@@ -995,7 +1123,8 @@
       "hamstrings",
       "core"
     ],
-    "equipment": "kettlebell"
+    "equipment": "kettlebell",
+    "kind": "weightReps"
   },
   {
     "name": "Turkish Get-Up",
@@ -1003,7 +1132,8 @@
       "core",
       "shoulders"
     ],
-    "equipment": "kettlebell"
+    "equipment": "kettlebell",
+    "kind": "weightReps"
   },
   {
     "name": "Burpee",
@@ -1012,7 +1142,8 @@
       "chest",
       "quads"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Wall Ball",
@@ -1020,7 +1151,8 @@
       "quads",
       "shoulders"
     ],
-    "equipment": "medicine ball"
+    "equipment": "medicine ball",
+    "kind": "weightReps"
   },
   {
     "name": "Box Jump",
@@ -1028,7 +1160,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "bodyweightReps"
   },
   {
     "name": "Renegade Row",
@@ -1036,7 +1169,8 @@
       "back",
       "core"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Man Maker",
@@ -1045,7 +1179,8 @@
       "back",
       "quads"
     ],
-    "equipment": "dumbbell"
+    "equipment": "dumbbell",
+    "kind": "weightReps"
   },
   {
     "name": "Sled Push",
@@ -1053,7 +1188,8 @@
       "quads",
       "glutes"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "cardioDistance"
   },
   {
     "name": "Sled Pull",
@@ -1061,7 +1197,8 @@
       "back",
       "hamstrings"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "cardioDistance"
   },
   {
     "name": "Battle Ropes",
@@ -1069,63 +1206,32 @@
       "shoulders",
       "core"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "timeOnly"
   },
   {
-    "name": "Running",
+    "name": "Treadmill Run",
     "muscleGroups": [
       "cardio"
     ],
-    "equipment": "bodyweight"
+    "equipment": "machine",
+    "kind": "cardioSpeedIncline"
   },
   {
-    "name": "Cycling",
-    "muscleGroups": [
-      "cardio",
-      "quads"
-    ],
-    "equipment": "machine"
-  },
-  {
-    "name": "Rowing",
-    "muscleGroups": [
-      "cardio",
-      "back"
-    ],
-    "equipment": "machine"
-  },
-  {
-    "name": "Jump Rope",
-    "muscleGroups": [
-      "cardio",
-      "calves"
-    ],
-    "equipment": "bodyweight"
-  },
-  {
-    "name": "Stair Climber",
-    "muscleGroups": [
-      "cardio",
-      "quads",
-      "glutes"
-    ],
-    "equipment": "machine"
-  },
-  {
-    "name": "Elliptical",
+    "name": "Running (Outdoor)",
     "muscleGroups": [
       "cardio"
     ],
-    "equipment": "machine"
+    "equipment": "bodyweight",
+    "kind": "cardioDistance"
   },
   {
-    "name": "Swimming",
+    "name": "Walking",
     "muscleGroups": [
-      "cardio",
-      "back",
-      "shoulders"
+      "cardio"
     ],
-    "equipment": "bodyweight"
+    "equipment": "bodyweight",
+    "kind": "cardioDistance"
   },
   {
     "name": "Incline Walk",
@@ -1134,6 +1240,100 @@
       "quads",
       "glutes"
     ],
-    "equipment": "machine"
+    "equipment": "machine",
+    "kind": "cardioSpeedIncline"
+  },
+  {
+    "name": "Cycling (Stationary)",
+    "muscleGroups": [
+      "cardio",
+      "quads"
+    ],
+    "equipment": "machine",
+    "kind": "cardioDistance"
+  },
+  {
+    "name": "Cycling (Outdoor)",
+    "muscleGroups": [
+      "cardio",
+      "quads"
+    ],
+    "equipment": "bodyweight",
+    "kind": "cardioDistance"
+  },
+  {
+    "name": "Assault Bike",
+    "muscleGroups": [
+      "cardio",
+      "quads"
+    ],
+    "equipment": "machine",
+    "kind": "cardioDistance"
+  },
+  {
+    "name": "Rowing Machine",
+    "muscleGroups": [
+      "cardio",
+      "back"
+    ],
+    "equipment": "machine",
+    "kind": "cardioDistance"
+  },
+  {
+    "name": "Ski Erg",
+    "muscleGroups": [
+      "cardio",
+      "back",
+      "shoulders"
+    ],
+    "equipment": "machine",
+    "kind": "cardioDistance"
+  },
+  {
+    "name": "Jump Rope",
+    "muscleGroups": [
+      "cardio",
+      "calves"
+    ],
+    "equipment": "bodyweight",
+    "kind": "cardioDistance"
+  },
+  {
+    "name": "Stair Climber",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "glutes"
+    ],
+    "equipment": "machine",
+    "kind": "cardioSpeedIncline"
+  },
+  {
+    "name": "Elliptical",
+    "muscleGroups": [
+      "cardio"
+    ],
+    "equipment": "machine",
+    "kind": "cardioSpeedIncline"
+  },
+  {
+    "name": "Swimming",
+    "muscleGroups": [
+      "cardio",
+      "back",
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "kind": "cardioDistance"
+  },
+  {
+    "name": "Hiking",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "glutes"
+    ],
+    "equipment": "bodyweight",
+    "kind": "cardioDistance"
   }
 ]

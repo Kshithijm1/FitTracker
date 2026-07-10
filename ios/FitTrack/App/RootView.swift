@@ -3,8 +3,8 @@ import SwiftUI
 struct RootView: View {
     var body: some View {
         TabView {
-            Tab("Today", systemImage: "circle.grid.2x2.fill") {
-                TodayView()
+            Tab("Home", systemImage: "house.fill") {
+                HomeView()
             }
             Tab("Train", systemImage: "dumbbell.fill") {
                 TrainHomeView()

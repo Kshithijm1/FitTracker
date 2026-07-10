@@ -45,10 +45,17 @@ struct FitTrackApp: App {
 }
 
 /// Composes the privacy cover (any non-`.active` phase), the Face ID lock
-/// gate, and the real app content — in that priority order.
+/// gate, first-run onboarding, and the real app content — in that
+/// priority order.
 private struct RootContentView: View {
     @Environment(AppContainer.self) private var container
     @Environment(\.scenePhase) private var scenePhase
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("appearanceMode") private var appearanceMode = AppearanceMode.system
+
+    /// welcome → questionnaire → done, driven locally so Welcome's three
+    /// entry paths (Apple / email / skip) all land in the same flow.
+    @State private var showingQuestionnaire = false
 
     var body: some View {
         Group {
@@ -56,9 +63,20 @@ private struct RootContentView: View {
                 PrivacyCoverView()
             } else if container.appLock.isEnabled && !container.appLock.isUnlocked {
                 LockScreenView()
+            } else if !hasCompletedOnboarding {
+                if showingQuestionnaire {
+                    OnboardingFlowView {
+                        hasCompletedOnboarding = true
+                    }
+                } else {
+                    WelcomeView {
+                        showingQuestionnaire = true
+                    }
+                }
             } else {
                 RootView()
             }
         }
+        .preferredColorScheme(appearanceMode.colorScheme)
     }
 }

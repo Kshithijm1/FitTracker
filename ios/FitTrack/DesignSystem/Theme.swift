@@ -1,5 +1,27 @@
 import SwiftUI
 
+/// User-selectable override for light/dark, independent of the system
+/// setting. Stored under the `"appearanceMode"` `@AppStorage` key.
+enum AppearanceMode: String, CaseIterable {
+    case system, light, dark
+
+    var label: String {
+        switch self {
+        case .system: return "System"
+        case .light: return "Light"
+        case .dark: return "Dark"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
+}
+
 /// Single source of truth for color, type, spacing, radius, and motion
 /// tokens. Views should never hardcode a hex value, font size, or spring —
 /// they reach through `Theme` so the whole app restyles from one place.

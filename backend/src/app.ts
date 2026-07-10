@@ -4,6 +4,7 @@ import { env } from "./env.js";
 import { authRoutes } from "./routes/auth.js";
 import { syncRoutes } from "./routes/sync.js";
 import { nutritionRoutes } from "./routes/nutrition.js";
+import { aiRoutes } from "./routes/ai.js";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
@@ -18,6 +19,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(authRoutes);
   await app.register(syncRoutes);
   await app.register(nutritionRoutes);
+  await app.register(aiRoutes);
 
   app.get("/health", async () => ({ status: "ok" }));
 

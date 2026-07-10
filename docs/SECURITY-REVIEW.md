@@ -177,3 +177,49 @@ future work):
 Everything else marked **Partial** above is a known, intentionally-accepted gap appropriate for
 a pre-launch, solo-developer project — not an oversight. Re-run this review before any public
 launch, and specifically before adding a web client (CORS) or a CI pipeline (wire `npm audit` in).
+
+---
+
+## Phase 5 Addendum — AI Feature Surface (reviewed 2026-07-09)
+
+Phase 5 added onboarding/login, an on-device RAG memory, an AI coach, and four
+new backend routes (`/v1/ai/chat`, `/v1/ai/food-photo`, `/v1/ai/equipment-photo`,
+`/v1/ai/recipe-import`). New attack surface and its posture:
+
+### Server-Side Request Forgery (recipe import)
+The recipe importer is the only place the server fetches a user-supplied URL.
+`backend/src/ai/safeFetch.ts` enforces: **https only**, DNS pre-resolution with
+rejection of loopback/private/link-local/CGNAT/metadata ranges (IPv4 + IPv6,
+including v4-mapped), **redirects disabled** (a public host cannot bounce the
+request to 169.254.169.254), 8s timeout, 512KB response cap. Covered by tests
+(`test/ai.test.ts`: non-https and private-IP URLs → 400).
+
+### AI route hardening
+All four routes require auth (JWT middleware), are rate-limited (chat 30/min,
+vision 10/min per IP), Zod-validate every body, and cap payloads (images ≤ ~4MB
+JPEG as base64 with a base64-format regex, chat prompt ≤ 24k chars, page text
+truncated to 12k chars before prompting). Vision/structured responses are
+constrained via structured outputs and **re-validated with Zod** before being
+returned to the client (defense-in-depth against model-format drift).
+
+### Prompt injection
+User-controlled text (chat questions, fetched page text, photo-adjacent user
+context) is always framed as *data* inside a fixed system prompt, and system
+prompts instruct the model to ignore instructions inside those sections. The
+worst-case outcome of a successful injection is a wrong coaching answer or
+absurd macro numbers — the model's output can only become text/JSON shown to
+the same user who supplied the input; it triggers no tool calls or writes.
+
+### On-device memory & privacy
+The RAG memory (`MemoryItem`) and chat transcript (`ChatMessage`) are
+**deliberately excluded from sync** — they never leave the device except as
+retrieved snippets inside an AI prompt the user explicitly triggers, and the
+on-device Foundation Models path keeps even that local when available. The
+SwiftData store retains its `completeUntilFirstUserAuthentication` file
+protection. "Erase coach memory" (Profile → AI Coach & privacy) deletes all
+memory rows on demand.
+
+### Anthropic key
+Unchanged posture: the key exists only in backend env (`env.ts`, optional);
+every AI feature degrades gracefully (503 → manual entry / friendly error)
+when it is absent.

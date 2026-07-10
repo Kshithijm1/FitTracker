@@ -25,7 +25,7 @@ struct PRDetectorServiceTests {
             weightKG: 100.0,
             reps: 8,
             rpe: nil,
-            isWarmup: false
+            setType: .normal
         )
 
         let achieved = detector.evaluate(set: entry, exerciseID: exerciseID, priorRecords: [], context: context)
@@ -46,7 +46,7 @@ struct PRDetectorServiceTests {
             PersonalRecord(exerciseID: exerciseID, kind: .e1RM, value: 126.0, setEntryID: setEntryID)
         ]
         
-        let subMaximalEntry = SetEntry(id: UUID(), index: 1, weightKG: 90.0, reps: 8, rpe: nil, isWarmup: false)
+        let subMaximalEntry = SetEntry(id: UUID(), index: 1, weightKG: 90.0, reps: 8, rpe: nil, setType: .normal)
         
         let secondAchieved = detector.evaluate(
             set: subMaximalEntry,
@@ -63,7 +63,7 @@ struct PRDetectorServiceTests {
         let detector = PRDetectorService()
         let exerciseID = UUID()
         
-        let entry = SetEntry(id: UUID(), index: 0, weightKG: 999.0, reps: 20, rpe: nil, isWarmup: true)
+        let entry = SetEntry(id: UUID(), index: 0, weightKG: 999.0, reps: 20, rpe: nil, setType: .warmup)
 
         let achieved = detector.evaluate(set: entry, exerciseID: exerciseID, priorRecords: [], context: context)
 

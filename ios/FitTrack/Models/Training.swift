@@ -1,6 +1,21 @@
 import Foundation
 import SwiftData
 
+/// What a set of this exercise actually measures. Drives which input
+/// fields the workout session shows (weight×reps vs. time/speed/incline…).
+enum ExerciseTrackingKind: String, Codable, CaseIterable {
+    /// Weight + reps (barbell/dumbbell/cable/machine work).
+    case weightReps
+    /// Reps only, with optional added weight (pull-ups, dips, push-ups).
+    case bodyweightReps
+    /// Duration only (plank, dead hang, wall sit).
+    case timeOnly
+    /// Duration + speed + incline (treadmill, stair climber).
+    case cardioSpeedIncline
+    /// Duration + distance (bike, rowing, swimming).
+    case cardioDistance
+}
+
 @Model
 final class Exercise: Syncable {
     @Attribute(.unique) var id: UUID
@@ -9,16 +24,25 @@ final class Exercise: Syncable {
     var equipment: String
     var isCustom: Bool
     var archivedAt: Date?
+    /// Raw string (not the enum) so adding kinds later is a data change,
+    /// not a schema migration. Default keeps pre-existing rows valid.
+    var trackingKindRaw: String = ExerciseTrackingKind.weightReps.rawValue
     var updatedAt: Date
     var deletedAt: Date?
     var dirty: Bool
+
+    var trackingKind: ExerciseTrackingKind {
+        get { ExerciseTrackingKind(rawValue: trackingKindRaw) ?? .weightReps }
+        set { trackingKindRaw = newValue.rawValue }
+    }
 
     init(
         id: UUID = UUID(),
         name: String,
         muscleGroups: [String],
         equipment: String,
-        isCustom: Bool = false
+        isCustom: Bool = false,
+        trackingKind: ExerciseTrackingKind = .weightReps
     ) {
         self.id = id
         self.name = name
@@ -26,6 +50,7 @@ final class Exercise: Syncable {
         self.equipment = equipment
         self.isCustom = isCustom
         self.archivedAt = nil
+        self.trackingKindRaw = trackingKind.rawValue
         self.updatedAt = .now
         self.deletedAt = nil
         self.dirty = isCustom
@@ -95,6 +120,12 @@ final class Workout: Syncable {
     var finishedAt: Date?
     var routineID: UUID?
     var notes: String
+    /// Display name ("Push Day"); copied from the routine at start time so
+    /// history reads well even if the routine is later renamed/deleted.
+    var name: String = ""
+    /// Estimated energy burned, filled in at finish (MET-based, see
+    /// `CalorieBurnMath`). 0 = not yet estimated.
+    var caloriesBurned: Int = 0
     var updatedAt: Date
     var deletedAt: Date?
     var dirty: Bool
@@ -106,12 +137,14 @@ final class Workout: Syncable {
     /// exactly when `finishedAt` is nil.
     var isInProgress: Bool { finishedAt == nil }
 
-    init(id: UUID = UUID(), startedAt: Date = .now, routineID: UUID? = nil, notes: String = "") {
+    init(id: UUID = UUID(), startedAt: Date = .now, routineID: UUID? = nil, notes: String = "", name: String = "") {
         self.id = id
         self.startedAt = startedAt
         self.finishedAt = nil
         self.routineID = routineID
         self.notes = notes
+        self.name = name
+        self.caloriesBurned = 0
         self.items = []
         self.updatedAt = .now
         self.deletedAt = nil
@@ -144,6 +177,23 @@ final class WorkoutItem: Syncable {
     }
 }
 
+/// How a set was performed. Warmups are excluded from PRs; drop/failure
+/// sets get distinct icons in the session UI instead of a plain number.
+enum SetType: String, Codable, CaseIterable {
+    case warmup, normal, drop, failure
+
+    /// Short badge label shown in place of the set number (normal sets
+    /// show their running number instead).
+    var badge: String? {
+        switch self {
+        case .warmup: return "W"
+        case .normal: return nil
+        case .drop: return "D"
+        case .failure: return "F"
+        }
+    }
+}
+
 @Model
 final class SetEntry: Syncable {
     @Attribute(.unique) var id: UUID
@@ -153,6 +203,14 @@ final class SetEntry: Syncable {
     var rpe: Double?
     var isWarmup: Bool
     var completedAt: Date?
+    /// Raw string for migration safety; see `setType`.
+    var setTypeRaw: String = SetType.normal.rawValue
+    // Cardio/duration metrics — used according to the exercise's
+    // `trackingKind`; zero when not applicable.
+    var durationSec: Int = 0
+    var distanceM: Double = 0
+    var speedKPH: Double = 0
+    var inclinePct: Double = 0
     var updatedAt: Date
     var deletedAt: Date?
     var dirty: Bool
@@ -162,21 +220,36 @@ final class SetEntry: Syncable {
     /// True once the user has tapped the checkmark for this row.
     var isCompleted: Bool { completedAt != nil }
 
+    var setType: SetType {
+        get { SetType(rawValue: setTypeRaw) ?? (isWarmup ? .warmup : .normal) }
+        set {
+            setTypeRaw = newValue.rawValue
+            // Kept in lockstep so PR detection and the sync payload (which
+            // predate `setType`) stay correct.
+            isWarmup = newValue == .warmup
+        }
+    }
+
     init(
         id: UUID = UUID(),
         index: Int,
         weightKG: Double,
         reps: Int,
         rpe: Double? = nil,
-        isWarmup: Bool = false
+        setType: SetType = .normal
     ) {
         self.id = id
         self.index = index
         self.weightKG = weightKG
         self.reps = reps
         self.rpe = rpe
-        self.isWarmup = isWarmup
+        self.isWarmup = setType == .warmup
         self.completedAt = nil
+        self.setTypeRaw = setType.rawValue
+        self.durationSec = 0
+        self.distanceM = 0
+        self.speedKPH = 0
+        self.inclinePct = 0
         self.updatedAt = .now
         self.deletedAt = nil
         self.dirty = true

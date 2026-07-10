@@ -14,6 +14,8 @@ final class AppContainer {
     let auth: AuthService
     let syncEngine: SyncEngine
     let healthKit: HealthKitService
+    let memory: MemoryService
+    let ai: AIService
 
     private(set) var didSeedExercises = false
 
@@ -25,6 +27,7 @@ final class AppContainer {
             WeightEntry.self, MeasurementEntry.self, ProgressPhoto.self,
             FoodItem.self, SavedMeal.self, SavedMealItem.self, FoodLog.self,
             WaterEntry.self, SleepEntry.self, StepsCache.self,
+            MemoryItem.self, ChatMessage.self,
         ])
         let configuration = ModelConfiguration(
             schema: schema,
@@ -44,6 +47,8 @@ final class AppContainer {
         self.auth = AuthService()
         self.syncEngine = SyncEngine(context: modelContainer.mainContext)
         self.healthKit = HealthKitService(context: modelContainer.mainContext)
+        self.memory = MemoryService(context: modelContainer.mainContext)
+        self.ai = AIService(memory: memory, modelContainer: modelContainer, auth: auth)
     }
 
     /// Runs once at launch: seeds the built-in exercise library on first run only.

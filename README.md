@@ -3,13 +3,28 @@
 Native iOS fitness app — one fast, beautiful app replacing MyFitnessPal + Strong/Hevy + a habit
 tracker. Full architecture and rationale: [`PLAN.md`](PLAN.md).
 
-**Status: Phases 1–4 complete.** Local-only core (SwiftData), backend accounts + sync
+**Status: Phases 1–5 complete.** Local-only core (SwiftData), backend accounts + sync
 (Fastify/Drizzle/Postgres, Sign in with Apple + email/password, push/pull sync with
 last-write-wins conflict resolution), integrations (HealthKit steps/sleep, barcode scanning,
 AI freeform-meal estimate, Today rings widget, rest-timer Live Activity), and hardening
 (Face ID app-lock, app-switcher privacy redaction, accessibility pass, security self-review).
 Signing in is optional — every core feature still works fully offline; an account only adds
-cross-device sync.
+cross-device sync and server-side AI fallback.
+
+**Phase 5 (2026-07):** first-run welcome/login + goal questionnaire that computes a full plan
+(Mifflin-St Jeor calories, macros, water, steps, pace-clamped goal dates) and seeds goal-named
+starter routines; Home page rebuilt (greeting, day/week/month progress with weight change,
+calorie ring with training-earned calories in their own color, three user-swappable quick-log
+tiles, ask-the-coach bar); AI coach with **on-device RAG memory** (`NLEmbedding` vectors in
+SwiftData, cosine retrieval — free, private, unlimited) answering from your own data via the
+on-device Foundation model (iOS 26+) or Claude on the backend; Train overhaul (set types
+warmup/drop/failure, per-exercise tracking kinds incl. treadmill speed/incline/duration and
+distance cardio, exercise reorder, muscle-group-filtered picker, configurable rest timer,
+workout history + save-as-routine, per-exercise progress search, MET-based calorie burn,
+equipment-photo → AI exercise suggestions with weight pre-fill); Nutrition overhaul (meal
+sections, calorie day/week detail with previous weeks, 9 portion units, My Foods history,
+recipe builder, AI recipe import from URL/caption, food-photo logging); full Profile (all
+goals incl. sleep + goal date, weight/volume/distance units, AI memory controls).
 
 Security posture: [`docs/SECURITY-REVIEW.md`](docs/SECURITY-REVIEW.md) (OWASP Mobile Top 10 +
 API Top 10 self-review, checked against this codebase, not a template). Dependency scanning:
@@ -88,20 +103,22 @@ choice, which lives in a local user file, not `project.yml`.
 
 ## Backend (accounts, sync, AI meal estimate)
 
-Runs and tests entirely on this Windows machine:
+Runs and tests on any machine with Node 22+ and Postgres:
 ```
 cd backend
 npm install
-docker compose up -d              # local Postgres on :5433
+docker compose up -d              # local Postgres on :5433 (or `brew install postgresql@17`
+                                   # and run it on 5433 — no Docker required)
 cp .env.example .env               # fill in JWT_ACCESS_SECRET (openssl rand -hex 32), etc.
                                     # ANTHROPIC_API_KEY is optional — without it, /v1/nutrition/estimate
-                                    # returns 503 and the iOS client falls back to manual entry
+                                    # and the /v1/ai/* routes return 503 and the iOS client degrades
+                                    # gracefully (manual entry / on-device AI where available)
 npm run db:migrate
 npm run dev                        # API on :3000
 
 cp .env.test.example .env.test     # separate DB (fittrack_test) so tests never touch dev data
 docker exec backend-postgres-1 psql -U fittrack -d fittrack -c "CREATE DATABASE fittrack_test;"
 npm run db:migrate:test
-npm test                           # vitest — 24 tests, real Postgres, no mocks
+npm test                           # vitest — 34 tests, real Postgres, no mocks
 ```
 Deploying to Fly.io + Neon: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).

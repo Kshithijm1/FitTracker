@@ -22,8 +22,11 @@ struct LogMealSheet: View {
     @State private var isSearchingRemote = false
     @State private var justLoggedItem: FoodItem?
     @State private var pendingQuantity: Double = 100
+    @State private var pendingUnit: FoodUnit = .grams
     @State private var showingFreeform = false
     @State private var showingBarcodeScanner = false
+    @State private var showingFoodPhoto = false
+    @State private var showingRecipeImport = false
     @State private var barcodeLookupError: String?
 
     var body: some View {
@@ -56,6 +59,7 @@ struct LogMealSheet: View {
                                 item: item,
                                 isJustLogged: justLoggedItem?.id == item.id,
                                 pendingQuantity: $pendingQuantity,
+                                pendingUnit: $pendingUnit,
                                 onTap: { logItem(item) },
                                 onQuantityChange: { updateLoggedQuantity(item) }
                             )
@@ -85,11 +89,17 @@ struct LogMealSheet: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Menu {
+                        Button("Scan barcode", systemImage: "barcode.viewfinder") {
+                            showingBarcodeScanner = true
+                        }
+                        Button("Photo of your food", systemImage: "camera.macro") {
+                            showingFoodPhoto = true
+                        }
                         Button("Describe freeform", systemImage: "text.cursor") {
                             showingFreeform = true
                         }
-                        Button("Scan barcode", systemImage: "barcode.viewfinder") {
-                            showingBarcodeScanner = true
+                        Button("Import recipe from link", systemImage: "sparkles") {
+                            showingRecipeImport = true
                         }
                     } label: {
                         Image(systemName: "plus")
@@ -104,6 +114,12 @@ struct LogMealSheet: View {
                 BarcodeScannerView { barcode in
                     Task { await handleScannedBarcode(barcode) }
                 }
+            }
+            .sheet(isPresented: $showingFoodPhoto) {
+                FoodPhotoView(slot: slot)
+            }
+            .sheet(isPresented: $showingRecipeImport) {
+                RecipeImportView()
             }
         }
     }
@@ -148,6 +164,7 @@ struct LogMealSheet: View {
 
         Haptics.light()
         pendingQuantity = defaultQuantity
+        pendingUnit = .grams
         withAnimation(Theme.Motion.quickSpring(reduceMotion: reduceMotion)) { justLoggedItem = item }
         Task {
             try? await Task.sleep(for: .seconds(3))
@@ -165,8 +182,14 @@ struct LogMealSheet: View {
         )
         descriptor.fetchLimit = 1
         guard let log = try? context.fetch(descriptor).first else { return }
-        log.quantityG = pendingQuantity
-        log.macroSnapshot = MacroMath.scaleMacros(per100g: item.per100g, quantityG: pendingQuantity)
+        // The inline editor works in whatever unit the user picked; the log
+        // always stores grams.
+        let grams = pendingUnit.grams(
+            quantity: pendingQuantity,
+            servingGrams: item.servings.first?.grams ?? 100
+        )
+        log.quantityG = grams
+        log.macroSnapshot = MacroMath.scaleMacros(per100g: item.per100g, quantityG: grams)
         log.markDirty()
         try? context.save()
     }
