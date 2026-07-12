@@ -25,7 +25,7 @@ const envSchema = z.object({
   APPLE_BUNDLE_ID: z.string().min(1),
   APPLE_TEAM_ID: optionalString(),
 
-  ANTHROPIC_API_KEY: optionalString(),
+  GEMINI_API_KEY: optionalString(),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -26,6 +26,39 @@ sections, calorie day/week detail with previous weeks, 9 portion units, My Foods
 recipe builder, AI recipe import from URL/caption, food-photo logging); full Profile (all
 goals incl. sleep + goal date, weight/volume/distance units, AI memory controls).
 
+**Phase 6 (2026-07): competitive-parity + differentiator features.** Researched what users of
+MyFitnessPal/MacroFactor (nutrition), Hevy/Strong (training), and Happy Scale (weight trend)
+complain about and ask for, then built the ones that fit this app's philosophy:
+
+- **Adaptive TDEE** (Progress → Nutrition): measured daily expenditure from your own logs +
+  weight trend (`AdaptiveTDEEMath`, energy-balance identity, fully offline), with what your
+  current target actually does at that burn rate and a one-tap target adjustment.
+- **Train quality-of-life** (all in the live-workout exercise menu): **supersets** (grouped
+  exercises alternate with no rest until the group's last lift), **plate calculator**
+  (barbell exercises — plates per side in your unit's real denominations), **warm-up set
+  generator** (bar/55/75/90% ramp, rounded to loadable weights, marked `W` so PRs ignore
+  them), **per-exercise rest timer** (squats 3 min, curls 60 s — persisted on the exercise).
+- **Copy yesterday's meal** + **quick-add calories** (Log sheet): the two fastest paths in
+  any tracker, now one tap / one field.
+- **"Fits your remaining macros"** (Log sheet): foods from your own history whose last-used
+  portion best fits today's remaining calories + protein (`MacroFitMath`, deterministic).
+- **Progress → Training**: completed sets per muscle group, this week vs last (split-balance
+  check), plus **plateau watch** — exercises whose recent e1RM stopped moving
+  (`StrengthMath.isPlateaued`), with a concrete deload suggestion.
+- **Pace & forecast** (Progress → Body): current kg-or-lb/week from a least-squares fit of
+  the trend line, and the date you reach your goal weight at that pace (`TrendMath` forecast;
+  silent when flat/moving away — no fake ETAs).
+- **Weekly recap** (Home, first days of each week): last week's workouts/sets/PRs, calorie
+  adherence, and trend movement in one dismissable card (`WeeklyRecapBuilder`); the same
+  summary is stored in the coach's memory so "how did last week go?" always has an answer.
+
+Deliberately rejected as bloat: social feeds/friends, badge gamification, motivational push
+notifications, punitive streaks. New math is covered by unit tests
+(`AdaptiveTDEEMathTests`, `PlateMathTests`, `WarmupMathTests`, `MacroFitMathTests`,
+`TrendForecastTests`, `StrengthPlateauTests`). New model fields (`Exercise.restSecondsOverride`,
+`WorkoutItem.supersetGroup`) are defaulted, migration-safe, and local-only until the sync
+schema evolves (same precedent as `Workout.name`/`caloriesBurned`).
+
 Security posture: [`docs/SECURITY-REVIEW.md`](docs/SECURITY-REVIEW.md) (OWASP Mobile Top 10 +
 API Top 10 self-review, checked against this codebase, not a template). Dependency scanning:
 [`.github/dependabot.yml`](.github/dependabot.yml).
@@ -110,7 +143,7 @@ npm install
 docker compose up -d              # local Postgres on :5433 (or `brew install postgresql@17`
                                    # and run it on 5433 — no Docker required)
 cp .env.example .env               # fill in JWT_ACCESS_SECRET (openssl rand -hex 32), etc.
-                                    # ANTHROPIC_API_KEY is optional — without it, /v1/nutrition/estimate
+                                    # GEMINI_API_KEY is optional — without it, /v1/nutrition/estimate
                                     # and the /v1/ai/* routes return 503 and the iOS client degrades
                                     # gracefully (manual entry / on-device AI where available)
 npm run db:migrate

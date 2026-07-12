@@ -36,7 +36,7 @@ describe("nutrition estimate", () => {
       payload: { description: "2 eggs and toast" },
     });
 
-    // .env.test ships no ANTHROPIC_API_KEY — this exercises the real
+    // .env.test ships no GEMINI_API_KEY — this exercises the real
     // "unavailable" path rather than mocking the Anthropic client.
     expect(response.statusCode).toBe(503);
   });

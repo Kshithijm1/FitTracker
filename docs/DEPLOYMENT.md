@@ -28,7 +28,7 @@ at `backend/render.yaml` so Render can provision the service from the repo direc
    - `DATABASE_URL` — the Neon pooled connection string from step 1
    - `JWT_ACCESS_SECRET` — output of `openssl rand -hex 32`
    - `APPLE_TEAM_ID` — leave blank unless/until Sign In with Apple is re-enabled
-   - `ANTHROPIC_API_KEY` — leave blank until Phase 3's AI estimate feature is needed
+   - `GEMINI_API_KEY` — leave blank until the AI features (coach chat, photo/recipe import, freeform meal estimate) are needed; get a free-tier key at aistudio.google.com/apikey
 4. Deploy. Render builds with `npm install && npm run build` and runs `npm start`
    (see `backend/render.yaml`).
 5. Confirm health: `curl https://<your-service>.onrender.com/health` → `{"status":"ok"}`.

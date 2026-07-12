@@ -18,5 +18,5 @@ services:
         value: com.kshithijm.fittrack
       - key: APPLE_TEAM_ID
         sync: false
-      - key: ANTHROPIC_API_KEY
+      - key: GEMINI_API_KEY
         sync: false

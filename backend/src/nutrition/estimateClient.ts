@@ -1,13 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
-import { env } from "../env.js";
-
-const anthropic = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
-
-/// Cheapest/fastest current Claude model — right fit for a small per-meal
-/// macro estimate (PLAN.md §1). Never call this without ANTHROPIC_API_KEY
-/// set; the key lives only server-side.
-const ESTIMATE_MODEL = "claude-haiku-4-5";
+import { AIUnavailableError, completeStructured } from "../ai/client.js";
 
 const estimateResponseSchema = z.object({
   calories: z.number().nonnegative(),
@@ -44,43 +36,27 @@ export class EstimateUnavailableError extends Error {
 }
 
 /// Freeform "2 eggs and toast" -> structured macro estimate (PLAN.md §1/§3
-/// — the escape hatch for foods not in USDA/OFF). Uses `output_config.format`
-/// (structured outputs) so the response is guaranteed to match the schema;
-/// the Zod re-validation below is defense-in-depth, not the primary guarantee.
+/// — the escape hatch for foods not in USDA/OFF). Delegates to the shared
+/// Gemini client; the Zod re-validation below is defense-in-depth, not the
+/// primary guarantee (Gemini's responseSchema already constrains the shape).
 export async function estimateMealMacros(description: string): Promise<NutritionEstimate> {
-  if (!env.ANTHROPIC_API_KEY) {
-    throw new EstimateUnavailableError();
-  }
-
-  let response;
+  let raw: unknown;
   try {
-    response = await anthropic.messages.create({
-      model: ESTIMATE_MODEL,
-      max_tokens: 256,
+    raw = await completeStructured({
       system:
         "You estimate nutrition macros for a single freeform meal description. " +
         "Assume a typical single-serving portion unless the description states a quantity. " +
         "Respond with your best estimate even for vague descriptions, and set confidence accordingly.",
-      messages: [{ role: "user", content: description }],
-      output_config: { format: { type: "json_schema", schema: RESPONSE_JSON_SCHEMA } },
+      prompt: description,
+      schema: RESPONSE_JSON_SCHEMA,
+      maxTokens: 256,
     });
   } catch (error) {
-    throw new EstimateUnavailableError(error);
+    if (error instanceof AIUnavailableError) throw new EstimateUnavailableError(error);
+    throw error;
   }
 
-  const textBlock = response.content.find((block) => block.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
-    throw new EstimateUnavailableError("No text content in model response");
-  }
-
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(textBlock.text);
-  } catch (error) {
-    throw new EstimateUnavailableError(error);
-  }
-
-  const result = estimateResponseSchema.safeParse(parsed);
+  const result = estimateResponseSchema.safeParse(raw);
   if (!result.success) {
     throw new EstimateUnavailableError(result.error);
   }

@@ -13,8 +13,8 @@ reviewed 2026-07-04, against the Phase 1–4 codebase.
 ### M1 — Improper Credential Usage
 **Pass.** Access/refresh tokens live in Keychain (`KeychainService.swift`) under
 `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` — never `UserDefaults`, never iCloud-synced.
-No secrets are embedded in the iOS bundle: `ANTHROPIC_API_KEY` stays server-side
-(`backend/src/nutrition/estimateClient.ts`); the USDA `DEMO_KEY` fallback is a public,
+No secrets are embedded in the iOS bundle: `GEMINI_API_KEY` stays server-side
+(`backend/src/ai/client.ts`); the USDA `DEMO_KEY` fallback is a public,
 non-secret rate-limited key by design (documented in `USDAProvider.swift`), not a credential leak.
 
 ### M2 — Inadequate Supply Chain Security
@@ -125,16 +125,17 @@ malicious client could submit an effectively-unbounded array of fake records in 
 **Fixed:** both routes now carry a 60/min rate limit (`routes/sync.ts`), and every per-table array
 in the push schema is capped at 500 records (`sync/schemas.ts`) — a client with a larger backlog
 simply makes more requests. `POST /v1/nutrition/estimate` was already rate-limited at 20/min
-specifically to bound cost exposure on the paid Anthropic upstream call.
+specifically to bound abuse of the free-tier Gemini upstream call (rate limits, not cost, are
+the constraint on a free tier).
 
 ### API5 — Broken Function Level Authorization
 **Pass.** `DELETE /v1/me` requires auth and only ever acts on `request.userId` (never a body-
 supplied ID) — a user can only delete their own account. No admin/privileged endpoints exist.
 
 ### API6 — Unrestricted Access to Sensitive Business Flows
-**Pass.** The one metered/costed flow — `POST /v1/nutrition/estimate` (calls paid Claude Haiku
-API) — is both auth-gated and rate-limited (20/min) specifically to bound abuse cost, by design
-(see `docs/DEPLOYMENT.md` pricing note).
+**Pass.** The one metered flow — `POST /v1/nutrition/estimate` (calls the free-tier Gemini
+API) — is both auth-gated and rate-limited (20/min) specifically to bound abuse of the shared
+free-tier quota, by design (see `docs/DEPLOYMENT.md`).
 
 ### API7 — Server-Side Request Forgery (SSRF)
 **N/A.** The backend accepts no user-supplied URLs anywhere — no webhook registration, no
@@ -151,11 +152,11 @@ accidentally opened wide (`*`) if that day comes.
 intent to version, no deprecated/shadow endpoints (this is the API's first version).
 
 ### API10 — Unsafe Consumption of Third-Party APIs
-**Partial.** Anthropic API errors are caught and collapsed to a generic 503
-(`EstimateUnavailableError`) — the client never sees upstream error detail. OFF/USDA responses
-are decoded into typed Swift structs (`OpenFoodFactsProvider.swift`, `USDAProvider.swift`), not
-trusted blindly.
-**Known gap:** iOS-side calls to OFF/USDA/Anthropic rely on `URLSession`'s default timeout
+**Partial.** Gemini API errors are caught and collapsed to a generic 503
+(`AIUnavailableError` / `EstimateUnavailableError`) — the client never sees upstream error detail.
+OFF/USDA responses are decoded into typed Swift structs (`OpenFoodFactsProvider.swift`,
+`USDAProvider.swift`), not trusted blindly.
+**Known gap:** iOS-side calls to OFF/USDA/Gemini rely on `URLSession`'s default timeout
 (~60s) rather than an explicit shorter timeout — a slow third party could make the log-a-meal
 flow feel hung longer than necessary. Low severity (it's a UX/resilience issue, not a security
 one), noted for a future pass.
@@ -219,7 +220,7 @@ SwiftData store retains its `completeUntilFirstUserAuthentication` file
 protection. "Erase coach memory" (Profile → AI Coach & privacy) deletes all
 memory rows on demand.
 
-### Anthropic key
+### Gemini key
 Unchanged posture: the key exists only in backend env (`env.ts`, optional);
 every AI feature degrades gracefully (503 → manual entry / friendly error)
 when it is absent.
