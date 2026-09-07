@@ -18,7 +18,7 @@
     "db:migrate:test": "cross-env NODE_ENV=test tsx src/db/migrate.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.110.0",
+    "@anthropic-ai/sdk": "^0.124.0",
     "@fastify/rate-limit": "^10.1.1",
     "argon2": "^0.41.1",
     "dotenv": "^16.4.5",
